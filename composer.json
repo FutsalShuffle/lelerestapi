@@ -1,0 +1,17 @@
+{
+    "name": "futsalshuffle/lelerestapi",
+    "description": "Rest api for prestashop",
+    "type": "prestashop-module",
+    "authors": [
+        {
+            "name": "Andrey Burdey",
+            "email": "nrgnevskyfrontak@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "src"
+        }
+    },
+    "require": {}
+}
