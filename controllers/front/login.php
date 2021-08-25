@@ -1,27 +1,21 @@
 <?php
 use App\Controllers\RestController;
+use App\Requests\LoginRequest;
 
 class LelerestapiLoginModuleFrontController extends RestController
 {
     public $email;
     public $password;
+    public $request;
 
     public function __construct()
     {
         parent::__construct();
-        $this->email = Tools::getValue('email');
-        $this->password = Tools::getValue('password');
+        $this->request = LoginRequest::load();
     }
 
     public function proccessPostMethod()
     {
-        if (!Validate::isEmail($this->email)) {
-            $this->response->setError('email', 'Please enter valid email');
-        }
-        if (!$this->password) {
-            $this->response->setError('password', 'Please enter password');
-        }
-        if (!empty($this->result['errors'])) $this->ajaxDie(Tools::jsonEncode($this->result));
         $customer = new Customer();
         if (!$customer->getByEmail($this->email, $this->password) && !$customer->id) {
             $this->response->setError('customer', 'Email or password is not correct');

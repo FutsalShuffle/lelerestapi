@@ -27,7 +27,7 @@ class Response {
         return die(json_encode($obj));
     }
 
-    public function return403Error()
+    public static function return403Error()
     {
         header('HTTP/1.0 403 Forbidden');
         $obj = [
@@ -38,7 +38,7 @@ class Response {
         return die(json_encode($obj));
     }
 
-    public function return404Error()
+    public static function return404Error()
     {
         header('HTTP/1.0 404 Not Found');
         $obj = [

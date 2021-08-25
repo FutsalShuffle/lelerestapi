@@ -9,16 +9,6 @@ class LelerestapiCategoryModuleFrontController extends RestController
 {
     public $request;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->request = new CategoryRequest();
-        $this->request->load();
-        if (!$this->request->id_category) {
-            return $this->response->return404Error();
-        }
-    }
-    
     /**
      * display
      *
@@ -26,6 +16,8 @@ class LelerestapiCategoryModuleFrontController extends RestController
      */
     public function proccessGetMethod()
     {
+        $this->request = CategoryRequest::load();
+        $this->request->validate();
         $category = new Category((int)$this->request->id_category, false, $this->context->language->id);
         if (!$category->id) {
             return $this->response->return404Error();

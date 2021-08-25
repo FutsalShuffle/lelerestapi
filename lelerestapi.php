@@ -1,5 +1,7 @@
 <?php
 require_once dirname(__FILE__).'/vendor/autoload.php';
+require_once dirname(__FILE__).'/classes/vendor/autoload.php';
+
 /**
 * 2007-2021 PrestaShop
 *
@@ -32,6 +34,10 @@ class Lelerestapi extends Module
 {
     protected $config_form = false;
 
+    const REST_AUTO_PAYMENTS = 'REST_AUTO_PAYMENTS';
+    const REST_PRIVATE_KEY   = 'REST_PRIVATE_KEY';
+    const REST_USE_JWT       = 'REST_USE_JWT';
+
     public function __construct()
     {
         $this->name = 'lelerestapi';
@@ -47,10 +53,10 @@ class Lelerestapi extends Module
 
         parent::__construct();
 
-        $this->displayName = $this->l('Test rest api');
-        $this->description = $this->l('Testing rest api ability');
+        $this->displayName = $this->l("Lele's REST API");
+        $this->description = $this->l('REST API module for prestashop 1.6+');
 
-        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
     }
 
     /**
@@ -59,16 +65,7 @@ class Lelerestapi extends Module
      */
     public function install()
     {
-        Db::getInstance()->execute('
-				CREATE TABLE `'._DB_PREFIX_.'favorite_product` (
-				`id_favorite_product` int(10) unsigned NOT NULL auto_increment,
-				`id_product` int(10) unsigned NOT NULL,
-				`id_customer` int(10) unsigned NOT NULL,
-				`id_shop` int(10) unsigned NOT NULL,
-				`date_add` datetime NOT NULL,
-  				`date_upd` datetime NOT NULL,
-				PRIMARY KEY (`id_favorite_product`))
-				ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8');
+        $this->installDB();
 
         return parent::install() &&
             $this->registerHook('header') &&
@@ -78,6 +75,28 @@ class Lelerestapi extends Module
     public function uninstall()
     {
         return parent::uninstall();
+    }
+
+    public function installDB()
+    {
+        $sql[] = "Db::getInstance()->execute('
+        CREATE TABLE `'._DB_PREFIX_.'favorite_product` (
+        `id_favorite_product` int(10) unsigned NOT NULL auto_increment,
+        `id_product` int(10) unsigned NOT NULL,
+        `id_customer` int(10) unsigned NOT NULL,
+        `id_shop` int(10) unsigned NOT NULL,
+        `date_add` datetime NOT NULL,
+          `date_upd` datetime NOT NULL,
+        PRIMARY KEY (`id_favorite_product`))
+        ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8');";
+
+        foreach ($sql as $db) {
+            DB::getInstance()->execute($db);
+        }
+
+        Configuration::updateValue(self::REST_AUTO_PAYMENTS, 0);
+        Configuration::updateValue(self::REST_PRIVATE_KEY, 'andrele82');
+        Configuration::updateValue(self::REST_USE_JWT, 1);
     }
 
     /**
@@ -91,13 +110,67 @@ class Lelerestapi extends Module
         if (((bool)Tools::isSubmit('submitLelerestapiModule')) == true) {
             $this->postProcess();
         }
+        return $this->renderForm();
+    }
 
-        $this->context->smarty->assign('module_dir', $this->_path);
-        $this->context->smarty->assign('prev_json', Configuration::get('MOBILE_INDEX_JSON','{}'));
+        /**
+     * getConfigForm
+     * Форма в админке в настройках модуля
+     * @return array
+     */
+    protected function getConfigForm()
+    {
+        $carriers = Carrier::getCarriers($this->context->language->id, true, false, false, null, Carrier::ALL_CARRIERS);
+        return array(
+            'form' => array(
+                'legend' => array(
+                'title' => $this->l('Settings'),
+                'icon' => 'icon-cogs',
+                ),
+                'input' => array(
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Use automatic payment methods detection (only for PS 1.7+)'),
+                        'name' => self::REST_AUTO_PAYMENTS,
+                        ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Private jwt key (is used for encrypting the session key)'),
+                        'name' => self::REST_PRIVATE_KEY,
+                        ),
+                    ),
+                    'submit' => array(
+                        'title' => $this->l('Save'),
+                ),
+            ),   
+        );
+    }
 
-        $output = $this->context->smarty->fetch($this->local_path.'views/templates/admin/configure.tpl');
+    /**
+     * renderForm
+     * Форма prestashop для админки
+     * @return void
+     */
+    protected function renderForm()
+    {
+        $helper = new HelperForm();
+        $helper->show_toolbar = false;
+        $helper->table = $this->table;
+        $helper->module = $this;
+        $helper->default_form_language = $this->context->language->id;
+        $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
+        $helper->identifier = $this->identifier;
+        $helper->submit_action = 'submitPwReactCartModule';
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false)
+            .'&configure='.$this->name.'&tab_module='.$this->tab.'&module_name='.$this->name;
+        $helper->token = Tools::getAdminTokenLite('AdminModules');
+        $helper->tpl_vars = array(
+            'fields_value' => $this->getConfigFormValues(), /* Add values for your inputs */
+            'languages' => $this->context->controller->getLanguages(),
+            'id_language' => $this->context->language->id,
+        );
 
-        return $output;
+        return $helper->generateForm(array($this->getConfigForm()));
     }
 
     /**
@@ -105,9 +178,9 @@ class Lelerestapi extends Module
      */
     protected function postProcess()
     {
-        // 
-        Configuration::updateValue('MOBILE_INDEX_HTML', htmlentities(htmlspecialchars(Tools::getValue('mobile_index_html', ''))));
-        Configuration::updateValue('MOBILE_INDEX_JSON', Tools::getValue('mobile_index_json', ''));
+        foreach ($this->getConfigFormValues() as $key=>$value) {
+            Configuration::updateValue($key, Tools::getValue($key));
+        }
     }
 
     /**
@@ -119,5 +192,14 @@ class Lelerestapi extends Module
             $this->context->controller->addJS($this->_path.'views/js/back.js');
             $this->context->controller->addCSS($this->_path.'views/css/back.css');
         }
+    }
+
+    public function getConfigFormValues()
+    {
+        return [
+            self::REST_AUTO_PAYMENTS => Configuration::get(self::REST_AUTO_PAYMENTS),
+            self::REST_PRIVATE_KEY   => Configuration::get(self::REST_PRIVATE_KEY),
+            self::REST_USE_JWT       => Configuration::get(self::REST_USE_JWT),
+        ];
     }
 }
