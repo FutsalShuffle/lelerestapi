@@ -175,7 +175,7 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
             foreach ($cart_products as $cart_product) {
                 if ($this->productInCartMatchesCriteria($cart_product)) {
                     $qty_to_check = $cart_product['cart_quantity'];
-                    if (Tools::getValue('op', 'up') == 'down') {
+                    if ($this->request->op == 'down') {
                         $qty_to_check -= $this->qty;
                     } else {
                         $qty_to_check += $this->qty;
@@ -255,7 +255,7 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
             $this->request->id_product,
             $this->request->id_product_attribute,
             0,
-            Tools::getValue('op', 'up'),
+            $this->request->op,
             0,
             null,
             true,
@@ -293,7 +293,7 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
 
         $removed = CartRule::autoRemoveFromCart();
         CartRule::autoAddToCart();
-        $this->response->setResult('summary', $this->getSummary());
+        $this->response->setResult('cart', $this->getSummary());
         $this->response->returnResponse();
     }
 

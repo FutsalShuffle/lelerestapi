@@ -14,6 +14,7 @@ class CartRequest implements Request
     public $id_product = 0;
     public $id_product_attribute = 0;
     public $id_address_delivery = 0;
+    public $op = 'up';
 
     /**
      * load
@@ -35,6 +36,7 @@ class CartRequest implements Request
         $e->id_product = \Tools::getValue('id_product', 0);
         $e->id_product_attribute = \Tools::getValue('id_product_attribute', 0);
         $e->qty = abs(\Tools::getValue('qty', 1));
+        $e->op = Tools::getValue('op', 'up');
         
         return $e;
     }
