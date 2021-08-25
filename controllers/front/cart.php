@@ -8,12 +8,6 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
 {
     public $request;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->request = CartRequest::load();
-    }
-
     public function proccessGetMethod()
     {
         $this->response->setResult('cart',$this->getSummary());
@@ -22,7 +16,9 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
 
     public function proccessPostMethod()
     {
+        $this->request = CartRequest::load();
         $this->request->validate();
+
         if ($this->request->add) {
             return $this->processChangeProductInCart();
         }
@@ -168,7 +164,7 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
             }
         }
 
-        $qty_to_check = $this->qty;
+        $qty_to_check = $this->request->qty;
         $cart_products = $this->context->cart->getProducts();
 
         if (is_array($cart_products)) {
@@ -176,9 +172,9 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
                 if ($this->productInCartMatchesCriteria($cart_product)) {
                     $qty_to_check = $cart_product['cart_quantity'];
                     if ($this->request->op == 'down') {
-                        $qty_to_check -= $this->qty;
+                        $qty_to_check -= $this->request->qty;
                     } else {
-                        $qty_to_check += $this->qty;
+                        $qty_to_check += $this->request->qty;
                     }
                     break;
                 }
@@ -251,7 +247,7 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
             true
         );
         $update_quantity = $this->context->cart->updateQty(
-            $this->qty,
+            $this->request->qty,
             $this->request->id_product,
             $this->request->id_product_attribute,
             0,

@@ -89,11 +89,11 @@ class LelerestapiProductModuleFrontController extends RestController
                     }
                 }
                 $this->response->setResult('combinations', $combinations);
-                foreach ($this->result['combinations'] as $comb) {
-                    if ($comb['default_on']) {
-                        $this->result['product']['price'] = (float)$this->result['product']['price'] - (float)$comb['price'];
-                    }
-                }
+                // foreach ($this->result['combinations'] as $comb) {
+                //     if ($comb['default_on']) {
+                //         $this->result['product']['price'] = (float)$this->result['product']['price'] - (float)$comb['price'];
+                //     }
+                // }
             }
         };
         return $this->response->returnResponse();

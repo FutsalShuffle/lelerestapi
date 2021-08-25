@@ -15,7 +15,9 @@ class RestControllerAuth extends RestFrontController
 		parent::__construct();
         $this->user = \MainRestApi::validateUser();
         $this->context->setCustomer(\MainRestApi::getUserObject());
-        $this->context->setCart(\MainRestApi::getCustomerCartObject($this->context->customer));
+        $cart = \MainRestApi::getCustomerCartObject($this->context->customer);
+        $this->context->setCart($cart);
+        $this->context->cookie->id_cart = $cart->id;
         if (!$this->user || !$this->context->customer->id) {
             $this->response->return403Error();
         }
