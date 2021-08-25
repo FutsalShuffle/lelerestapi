@@ -31,7 +31,13 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
     }
 
     public function processSetProductQty() {/*TODO*/}
-
+    
+    /**
+     * getSummary
+     * Возвращает итоговую инфу по корзине
+     * Returns Cart summary
+     * @return array
+     */
     public function getSummary()
     {
         $cart = new Cart($this->context->cart->id);
@@ -67,7 +73,12 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
         $summary['currencySign'] = $currency->sign;
         return $summary;
     }
-
+    
+    /**
+     * processDeleteProductInCart
+     *
+     * @return void
+     */
     private function processDeleteProductInCart()
     {
         $customization_product = Db::getInstance()->executeS(
@@ -137,9 +148,14 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
         CartRule::autoRemoveFromCart();
         CartRule::autoAddToCart();
         $this->response->setResult('cart', $this->getSummary());
-        $this->response->returnResponse();
+        return $this->response->returnResponse();
     }
-
+    
+    /**
+     * processChangeProductInCart
+     *
+     * @return void
+     */
     private function processChangeProductInCart()
     {
         $mode = (Tools::getIsset('update') && $this->request->id_product) ? 'update' : 'add';
@@ -290,9 +306,16 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
         $removed = CartRule::autoRemoveFromCart();
         CartRule::autoAddToCart();
         $this->response->setResult('cart', $this->getSummary());
-        $this->response->returnResponse();
+        return $this->response->returnResponse();
     }
-
+    
+    /**
+     * shouldAvailabilityErrorBeRaised
+     *
+     * @param  mixed $product
+     * @param  mixed $qtyToCheck
+     * @return bool
+     */
     private function shouldAvailabilityErrorBeRaised($product, $qtyToCheck)
     {
         if (($this->request->id_product_attribute)) {
@@ -311,7 +334,13 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
 
         return $productQuantity < 0;
     }
-
+    
+    /**
+     * productInCartMatchesCriteria
+     *
+     * @param  mixed $productInCart
+     * @return bool
+     */
     private function productInCartMatchesCriteria($productInCart)
     {
         return (!isset($this->request->id_product_attribute) || (
@@ -319,7 +348,12 @@ class LelerestapiCartModuleFrontController extends RestControllerAuth
                     $productInCart['id_customization'] == $this->request->customization_id )
                 ) && isset($this->request->id_product) && $productInCart['id_product'] == $this->request->id_product;
     }
-
+    
+    /**
+     * areProductsAvailable
+     *
+     * @return bool
+     */
     private function areProductsAvailable()
     {
         $product = $this->context->cart->checkQuantities(true);

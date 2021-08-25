@@ -22,11 +22,12 @@ class LelerestapiInitModuleFrontController extends RestController
         foreach ($slides as &$slide) {
             $slide['image_url'] = $this->context->link->getMediaLink(_MODULE_DIR_.'ps_imageslider/images/'.$slide['image']);
         }
-       $this->response->setResult('homeslider', $slides);
-       $this->response->returnResponse();
+        $this->response->setResult('homeslider', $slides);
+        return $this->response->returnResponse();
     }
+
     public function processPostMethod()
     {
-        $this->response->return403Error();
+        return $this->response->return403Error();
     }
 }

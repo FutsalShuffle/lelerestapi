@@ -9,11 +9,6 @@ class LelerestapiCategoryModuleFrontController extends RestController
 {
     public $request;
 
-    /**
-     * display
-     *
-     * @return void
-     */
     public function proccessGetMethod()
     {
         $this->request = CategoryRequest::load();

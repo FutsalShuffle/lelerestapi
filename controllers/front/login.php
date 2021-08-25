@@ -4,8 +4,6 @@ use App\Requests\LoginRequest;
 
 class LelerestapiLoginModuleFrontController extends RestController
 {
-    public $email;
-    public $password;
     public $request;
 
     public function __construct()
@@ -17,7 +15,7 @@ class LelerestapiLoginModuleFrontController extends RestController
     public function proccessPostMethod()
     {
         $customer = new Customer();
-        if (!$customer->getByEmail($this->email, $this->password) && !$customer->id) {
+        if (!$customer->getByEmail($this->request->email, $this->request->password) && !$customer->id) {
             $this->response->setError('customer', 'Email or password is not correct');
         }
         if ($this->response->hasErrors()) return $this->response->returnResponse();
