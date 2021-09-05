@@ -78,7 +78,7 @@ class Lelerestapi extends Module
             DB::getInstance()->execute($db);
         }
 
-        Configuration::updateValue(self::REST_AUTO_PAYMENTS, 0);
+        Configuration::updateValue(self::REST_AUTO_PAYMENTS, 1);
         Configuration::updateValue(self::REST_PRIVATE_KEY, 'andrele82');
         Configuration::updateValue(self::REST_USE_JWT, 1);
     }
