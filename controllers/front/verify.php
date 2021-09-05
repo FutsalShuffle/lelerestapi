@@ -1,7 +1,7 @@
 <?php
 
 use App\Controllers\RestControllerAuth;
-
+use App\Exceptions\ExceptionNotAllowed;
 /**
  * LelerestapiVerifyModuleFrontController
  */
@@ -14,12 +14,10 @@ class LelerestapiVerifyModuleFrontController extends RestControllerAuth
             $this->response->setResult('customer', $this->user);
             $this->response->returnResponse();
         }
-        
-        $this->response->setError('customer', 'Not logged in');
-        $this->response->returnResponse();
+        return ExceptionNotAllowed::init(['customer' => 'Not logged in']);
     }
     public function proccessPostMethod()
     {
-        return $this->response->return403Error();
+        return ExceptionNotAllowed::init();
     }
 }

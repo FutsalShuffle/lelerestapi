@@ -6,7 +6,25 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit3411257ec192e943c2ead24ab6e4b647
 {
+    public static $files = array (
+        'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
+        'R' => 
+        array (
+            'React\\Promise\\' => 14,
+        ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Stream\\' => 18,
+            'GuzzleHttp\\Ring\\' => 16,
+            'GuzzleHttp\\' => 11,
+        ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
+        ),
         'A' => 
         array (
             'App\\' => 4,
@@ -14,6 +32,26 @@ class ComposerStaticInit3411257ec192e943c2ead24ab6e4b647
     );
 
     public static $prefixDirsPsr4 = array (
+        'React\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/react/promise/src',
+        ),
+        'GuzzleHttp\\Stream\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/streams/src',
+        ),
+        'GuzzleHttp\\Ring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/ringphp/src',
+        ),
+        'GuzzleHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',

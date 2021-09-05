@@ -2,7 +2,7 @@
 use App\Controllers\RestControllerAuth;
 
 /**
- * LelerestapiRACartModuleFrontController
+ * LelerestapiOrderHistoryModuleFrontController
  */
 class LelerestapiOrderHistoryModuleFrontController extends RestControllerAuth
 {

@@ -1,7 +1,6 @@
 <?php
 namespace App\Requests;
 use App\Contracts\Request;
-use App\Response\Response;
 
 class CategoryRequest implements Request
 {
@@ -23,19 +22,18 @@ class CategoryRequest implements Request
         return $e;
     }
     
+    /**
+     * @return array
+     */
     public function validate()
     {
-        $response = new Response();
+        $errors = [];
         if ($this->id_category <= 0) {
-            $response->setError('id_category', 'Invalid category id');
+            $errors['id_category'] =  'Invalid category id';
         }
         if ($this->p <= 0) {
-            $response->setError('p', 'Invalid page number');
+            $errors['p'] =  'Invalid page number';
         }
-        if ($response->hasErrors()) {
-            $response->setResponseCode(400);
-            $response->returnResponse();
-        }
-        return true;
+        return $errors;
     }
 }

@@ -1,35 +1,12 @@
 <?php
-require_once dirname(__FILE__).'/vendor/autoload.php';
-require_once dirname(__FILE__).'/classes/vendor/autoload.php';
-
-/**
-* 2007-2021 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-*  @author    PrestaShop SA <contact@prestashop.com>
-*  @copyright 2007-2021 PrestaShop SA
-*  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-*  International Registered Trademark & Property of PrestaShop SA
-*/
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
+require_once dirname(__FILE__).'/vendor/autoload.php';
+require_once dirname(__FILE__).'/src/Classes/FavoriteProduct.php';
+require_once dirname(__FILE__).'/src/Classes/FavoriteProductAccount.php';
+// require_once dirname(__FILE__).'/src/classes/PWReactPayment.php';
+
 class Lelerestapi extends Module
 {
     protected $config_form = false;
@@ -79,8 +56,7 @@ class Lelerestapi extends Module
 
     public function installDB()
     {
-        $sql[] = "Db::getInstance()->execute('
-        CREATE TABLE `'._DB_PREFIX_.'favorite_product` (
+        $sql[] = "CREATE TABLE `'._DB_PREFIX_.'favorite_product` (
         `id_favorite_product` int(10) unsigned NOT NULL auto_increment,
         `id_product` int(10) unsigned NOT NULL,
         `id_customer` int(10) unsigned NOT NULL,
@@ -89,6 +65,14 @@ class Lelerestapi extends Module
           `date_upd` datetime NOT NULL,
         PRIMARY KEY (`id_favorite_product`))
         ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8');";
+
+        $sql[] = "CREATE TABLE `"._DB_PREFIX_."pwreact_payment` (
+            `id_pwreact_payment` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            `submit_controller` varchar(60) NOT NULL,
+            `name` varchar(255) NOT NULL,
+            `description` varchar(255) NOT NULL,
+            `module` varchar(60) NOT NULL
+        );";
 
         foreach ($sql as $db) {
             DB::getInstance()->execute($db);

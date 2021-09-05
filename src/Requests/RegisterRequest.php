@@ -1,7 +1,6 @@
 <?php
 namespace App\Requests;
 use App\Contracts\Request;
-use App\Response\Response;
 
 class RegisterRequest implements Request
 {
@@ -13,7 +12,7 @@ class RegisterRequest implements Request
     /**
      * load
      *
-     * @return LoginRequest
+     * @return RegisterRequest
      */
     public static function load()
     {
@@ -24,31 +23,30 @@ class RegisterRequest implements Request
         $e->lastname  = \Tools::getValue('lastname', '');
         return $e;
     }
-    
+
+    /**
+     * @return array
+     */
     public function validate()
     {
-        $response = new Response();
+        $errors = [];
 
         if (!\Validate::isEmail($this->email)) {
-            $response->setError('email', 'Please enter valid email');
+            $errors['email'] = 'Please enter valid email';
         }
 
         if (!$this->password && strlen($this->password) < 6) {
-            $response->setError('password', 'Please enter correct password');
+            $errors['password'] = 'Please enter correct password';
         }
         
         if (!$this->lastname) {
-            $response->setError('lastname', 'Please enter correct lastname');
+            $errors['lastname'] = 'Please enter correct lastname';
         }
 
         if (!$this->firstname) {
-            $response->setError('firstname', 'Please enter correct firstnam');
+            $errors['firstname'] = 'Please enter correct firstname';
         }
 
-        if ($response->hasErrors()) {
-            $response->setResponseCode(400);
-            $response->returnResponse();
-        }
-        return true;
+        return $errors;
     }
 }

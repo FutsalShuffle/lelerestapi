@@ -1,7 +1,7 @@
 <?php
 
 use App\Controllers\RestController;
-use App\Requests\CategoryRequest;
+use App\Services\CategoryService;
 /**
  * LelerestapiCategoryModuleFrontController
  */
@@ -11,15 +11,8 @@ class LelerestapiCategoryModuleFrontController extends RestController
 
     public function proccessGetMethod()
     {
-        $this->request = CategoryRequest::load();
-        $this->request->validate();
-        $category = new Category((int)$this->request->id_category, false, $this->context->language->id);
-        if (!$category->id) {
-            return $this->response->return404Error();
-        }
-        $this->response->setResult('category', $category);
-        $this->response->setResult('products', $category->getProducts($this->context->language->id, $this->request->p, $this->request->nbProducts, null, null, false, true, false, 0, false, null));
-        return $this->response->returnResponse();
+        $data = (new CategoryService($this->context))->getCategoryData();
+        return $this->response->returnJson($data);
     }
     
 }

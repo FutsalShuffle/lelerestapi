@@ -15,10 +15,15 @@ class Response {
     public function setError($key,$error) {
         $this->errors[$key] = $error;
     }
+
+    /**
+     * Возвращает json с результатом и ошибками из стейта
+     * 
+     */
     public function returnResponse()
     {
-        header("HTTP/1.0 ".$this->responseCode."");
         header('Content-Type: application/json');
+        header("HTTP/1.0 ".$this->responseCode."");
         $obj = [
             'success' => !$this->hasErrors(),
             'result' => $this->result,
@@ -29,6 +34,7 @@ class Response {
 
     public static function return403Error()
     {
+        header('Content-Type: application/json');
         header('HTTP/1.0 403 Forbidden');
         $obj = [
             'success' => false,
@@ -40,6 +46,7 @@ class Response {
 
     public static function return404Error()
     {
+        header('Content-Type: application/json');
         header('HTTP/1.0 404 Not Found');
         $obj = [
             'success' => false,
@@ -49,8 +56,30 @@ class Response {
         return die(json_encode($obj));
     }
 
+    /**
+     * Проверка на ошибки
+     * @return boolean
+     * 
+     */
     public function hasErrors()
     {
         return (bool)count($this->errors);
+    }
+
+    /**
+     * Возвращает array как json с 200 статусом
+     * @param array $data
+     * 
+     */
+    public function returnJson(array $data)
+    {
+        header('Content-Type: application/json');
+        header("HTTP/1.0 ".$this->responseCode."");
+        $obj = [
+            'success' => true,
+            'result' => $data,
+            'errors' => []
+        ];
+        return die(json_encode($obj));
     }
 }

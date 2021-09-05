@@ -1,37 +1,25 @@
 <?php
 namespace App\Controllers;
 use App\Contracts\RestFrontController;
-require_once dirname(__FILE__).'/../../classes/Main.php';
-require_once dirname(__FILE__).'/../../classes/RestApiHelpers.php';
-require_once dirname(__FILE__).'/../../classes/FavoriteProduct.php';
+use App\Classes\MainRestApi;
+use App\Exceptions\ExceptionNotAllowed;
 
 class RestControllerAuth extends RestFrontController
 {
-    public $result = [];
     public $user;
 
     public function __construct()
 	{
 		parent::__construct();
-        $this->user = \MainRestApi::validateUser();
-        $this->context->setCustomer(\MainRestApi::getUserObject());
-        $cart = \MainRestApi::getCustomerCartObject($this->context->customer);
+        $this->user = MainRestApi::validateUser();
+        $customer = MainRestApi::getUserObject();
+        if (!$customer) ExceptionNotAllowed::init();
+        $this->context->setCustomer($customer);
+        $cart = MainRestApi::getCustomerCartObject($this->context->customer);
         $this->context->setCart($cart);
         $this->context->cookie->id_cart = $cart->id;
         if (!$this->user || !$this->context->customer->id) {
-            $this->response->return403Error();
+            ExceptionNotAllowed::init();
         }
 	}
-
-    public function setResult($key, $value)
-    {
-        $this->result['success'] = 1;
-        $this->result[$key] = $value;
-    }
-
-    public function setErrors($key, $value)
-    {
-        $this->result['success'] = 0;
-        $this->result['errors'][$key] = $value;
-    }
 }

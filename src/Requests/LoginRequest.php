@@ -1,7 +1,6 @@
 <?php
 namespace App\Requests;
 use App\Contracts\Request;
-use App\Response\Response;
 
 class LoginRequest implements Request
 {
@@ -21,22 +20,21 @@ class LoginRequest implements Request
         return $e;
     }
     
+    /**
+     * @return array
+     */
     public function validate()
     {
-        $response = new Response();
+        $errors = [];
 
         if (!\Validate::isEmail($this->email)) {
-            $response->setError('email', 'Please enter valid email');
+            $errors['email'] = 'Please enter valid email';
         }
 
         if (!$this->password) {
-            $response->setError('password', 'Please enter password');
+            $errors['password'] = 'Please enter password';
         }
 
-        if ($response->hasErrors()) {
-            $response->setResponseCode(400);
-            $response->returnResponse();
-        }
-        return true;
+        return $errors;
     }
 }
