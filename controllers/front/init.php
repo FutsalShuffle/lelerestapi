@@ -1,5 +1,7 @@
 <?php
 use App\Controllers\RestController;
+use App\Exceptions\ExceptionNotAllowed;
+
 /**
  * LelerestapiCustomPageModuleFrontController
  */
@@ -28,6 +30,6 @@ class LelerestapiInitModuleFrontController extends RestController
 
     public function processPostMethod()
     {
-        return $this->response->return403Error();
+        return ExceptionNotAllowed::init();
     }
 }

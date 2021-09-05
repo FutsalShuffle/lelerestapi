@@ -1,13 +1,14 @@
 
 <?php
 use App\Controllers\RestControllerAuth;
+use App\Exceptions\ExceptionNotAllowed;
 
 class LelerestapiPaymentsModuleFrontController extends RestControllerAuth
 {
 
     public function proccessPostMethod()
     {
-        $this->response->return403Error();
+        return ExceptionNotAllowed::init();
     }
 
     public function proccessGetMethod()

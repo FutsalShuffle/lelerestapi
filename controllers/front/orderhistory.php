@@ -1,5 +1,7 @@
 <?php
 use App\Controllers\RestControllerAuth;
+use App\Exceptions\ExceptionNotFound;
+use App\Exceptions\ExceptionNotAllowed;
 
 /**
  * LelerestapiOrderHistoryModuleFrontController
@@ -10,8 +12,7 @@ class LelerestapiOrderHistoryModuleFrontController extends RestControllerAuth
     {
         $history = Order::getCustomerOrders((int)$this->context->customer->id);
         if (!$history) {
-            $this->response->setError('history', "Couldn't get history data");
-            return $this->response->returnResponse();
+            ExceptionNotFound::init();
         }
         $this->response->setResult('history', $history);
         return $this->response->returnResponse();
@@ -19,7 +20,7 @@ class LelerestapiOrderHistoryModuleFrontController extends RestControllerAuth
 
     public function proccessPostMethod()
     {
-        return $this->response->return403Error();
+        return ExceptionNotAllowed::init();
     }
     
 }
