@@ -26,7 +26,7 @@ class ProductService
 
         $sql = 'SELECT p.*, product_shop.*, stock.`out_of_stock` out_of_stock, pl.`description`, pl.`description_short`,
         pl.`link_rewrite`, pl.`meta_description`, pl.`meta_keywords`, pl.`meta_title`, pl.`name`, pl.`available_now`, pl.`available_later`,
-        p.`ean13`, p.`isbn`, p.`upc`, p.`mpn`, image_shop.`id_image` id_image, il.`legend`,
+        p.`ean13`, p.`isbn`, p.`upc`, image_shop.`id_image` id_image, il.`legend`,
         DATEDIFF(product_shop.`date_add`, DATE_SUB("' . date('Y-m-d') . ' 00:00:00",
         INTERVAL ' . (\Validate::isUnsignedInt(\Configuration::get('PS_NB_DAYS_NEW_PRODUCT')) ? \Configuration::get('PS_NB_DAYS_NEW_PRODUCT') : 20) . '
         DAY)) > 0 AS new
