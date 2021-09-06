@@ -15,7 +15,7 @@ class MainRestApi {
      * @param string $email
      * @return string
      */
-    public static function createJwt(string $email) {
+    public static function createJwt($email) {
         $payload = array(
             "email" => $email,
         );
@@ -29,12 +29,28 @@ class MainRestApi {
      * @return string|bool
      */
     public static function getToken() {
-        foreach (getallheaders() as $name => $value) {
+        foreach (self::getHeaders() as $name => $value) {
             if ($name === 'Authorization') {
                 return str_replace('Bearer ', '', $value); 
             }
         }
         return false;
+    }
+
+    public static function getHeaders()
+    {
+        if (!function_exists('getallheaders')) {
+            function getallheaders() {
+            $headers = [];
+            foreach ($_SERVER as $name => $value) {
+                if (substr($name, 0, 5) == 'HTTP_') {
+                    $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+                }
+            }
+            return $headers;
+            }
+        }
+        return getallheaders();
     }
     
     /**
