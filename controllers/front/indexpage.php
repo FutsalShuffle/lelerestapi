@@ -6,7 +6,7 @@ use App\Services\IndexService;
 /**
  * LelerestapiCustomPageModuleFrontController
  */
-class LelerestapiInitModuleFrontController extends RestController
+class LelerestapiIndexPageModuleFrontController extends RestController
 {
 
     public function proccessGetMethod()

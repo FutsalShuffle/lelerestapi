@@ -33,7 +33,7 @@ class IndexService
         }
 
         $products = [];
-        $category = new Category((int)\Configuration::get('HOME_FEATURED_CAT'), (int)$this->context->language->id);
+        $category = new \Category((int)\Configuration::get('HOME_FEATURED_CAT'), (int)$this->context->language->id);
         $nb = (int)\Configuration::get('HOME_FEATURED_NBR');
         if ($nb) {
             if (\Configuration::get('HOME_FEATURED_RANDOMIZE'))
