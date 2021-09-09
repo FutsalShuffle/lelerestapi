@@ -4,7 +4,7 @@ use App\Exceptions\ExceptionNotAllowed;
 use App\Services\IndexService;
 
 /**
- * LelerestapiCustomPageModuleFrontController
+ * LelerestapiIndexPageModuleFrontController
  */
 class LelerestapiIndexPageModuleFrontController extends RestController
 {

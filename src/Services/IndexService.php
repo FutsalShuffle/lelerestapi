@@ -11,7 +11,7 @@ class IndexService
     }
     
     /**
-     * Данные по категории
+     * Get homeslider + featured products
      * @return array
      */
     public function getIndexPage()

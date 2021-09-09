@@ -14,7 +14,7 @@ class CategoryService
     }
     
     /**
-     * Данные по категории
+     * get Category 
      * @return array
      */
     public function getCategoryData()

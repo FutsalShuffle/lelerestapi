@@ -2,6 +2,7 @@
 
 use App\Controllers\RestController;
 use App\Services\CategoryService;
+
 /**
  * LelerestapiCategoryModuleFrontController
  */

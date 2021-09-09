@@ -14,7 +14,7 @@ class RegisterService
     }
 
     /**
-     * Регистрация пользователя
+     * Customer register
      * @return array
      */
     public function register()
