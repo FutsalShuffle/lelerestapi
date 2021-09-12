@@ -15,6 +15,10 @@
     },
     "require": {
         "firebase/php-jwt": "^5.2",
-        "guzzlehttp/guzzle": "^5.3"
+        "guzzlehttp/guzzle": "5.3.4",
+        "phpunit/phpunit": "7.5.20"
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit"
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 use App\Exceptions\ExceptionNotFound;
+use App\Exceptions\ExceptionInvalidData;
 
 class ProductService
 {
@@ -21,7 +22,7 @@ class ProductService
         $id_product = \Tools::getValue('id_product', 0);
 
         if (!$id_product) {
-            ExceptionNotFound::init();
+            ExceptionInvalidData::init();
         }
 
         $sql = 'SELECT p.*, product_shop.*, stock.`out_of_stock` out_of_stock, pl.`description`, pl.`description_short`,
@@ -44,9 +45,10 @@ class ProductService
 
         $row = \Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
 
-        if (!is_array($row)) {
+        if (!is_array($row) || empty($row)) {
             ExceptionNotFound::init();
         }
+
         $product = \Product::getProductProperties($this->context->language->id, $row);
         $product['price_display'] = \Tools::displayPrice($product['price']);
 

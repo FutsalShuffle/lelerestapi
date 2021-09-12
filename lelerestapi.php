@@ -7,6 +7,7 @@ require_once dirname(__FILE__).'/src/Classes/FavoriteProduct.php';
 require_once dirname(__FILE__).'/src/Classes/FavoriteProductAccount.php';
 // require_once dirname(__FILE__).'/src/classes/PWReactPayment.php';
 
+
 class Lelerestapi extends Module
 {
     protected $config_form = false;

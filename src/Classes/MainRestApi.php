@@ -1,6 +1,7 @@
 <?php
 namespace App\Classes;
 use \Firebase\JWT\JWT;
+use App\Exceptions\ExceptionInvalidData;
 
 /**
  * MainRestApi
@@ -61,7 +62,11 @@ class MainRestApi {
     public static function validateUser() {
         if (!self::getToken()) return false;
         $token = self::getToken();
-        $user = JWT::decode($token, self::key, array('HS256'));
+        try {
+            $user = JWT::decode($token, self::key, array('HS256'));
+        } catch (\Exception $e) {
+            ExceptionInvalidData::init();
+        }
         if ($user->email)
             return self::getUserByJwt($user->email);
         else
