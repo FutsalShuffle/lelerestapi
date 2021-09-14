@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-class VerifyTest extends TestCase
+class CartTest extends TestCase
 {
     private $http;
     private $params;
@@ -17,9 +17,9 @@ class VerifyTest extends TestCase
         $this->http = null;
     }
 
-    public function testVerifyWithToken()
+    public function testCartSummaryWithToken()
     {
-        $request = $this->http->createRequest('GET', _SHOP_URL_.'module/lelerestapi/'.'verify', [
+        $request = $this->http->createRequest('GET', _SHOP_URL_.'module/lelerestapi/'.'cart', [
             'headers' => [
                 'Authorization' => 'Bearer '._JWT_TOKEN_
             ]
@@ -33,11 +33,12 @@ class VerifyTest extends TestCase
         $this->assertEquals("application/json", $contentType);
         $this->assertTrue($data['success']);
         $this->assertNotEmpty($data['result']);
+        $this->assertNotEmpty($data['result']['cart']);
     }
 
-    public function testVerifyWithWrongToken()
+    public function testCartSummaryWithWrongToken()
     {
-        $response = $this->http->createRequest('GET', _SHOP_URL_.'module/lelerestapi/'.'verify', [
+        $response = $this->http->createRequest('GET', _SHOP_URL_.'module/lelerestapi/'.'cart', [
             'headers' => [
                 'Authorization' => 'Bearer eyJ0sdadas'
             ]
@@ -53,9 +54,9 @@ class VerifyTest extends TestCase
         $this->assertEmpty($data['result']);
     }
 
-    public function testVerifyWithoutToken()
+    public function testCartSummaryWithoutToken()
     {
-        $response = $this->http->createRequest('GET', _SHOP_URL_.'module/lelerestapi/'.'verify', $this->params);
+        $response = $this->http->createRequest('GET', _SHOP_URL_.'module/lelerestapi/'.'cart', $this->params);
         $response = $this->http->send($response);
 
         $this->assertEquals(403, $response->getStatusCode());
@@ -65,5 +66,34 @@ class VerifyTest extends TestCase
         $this->assertEquals("application/json", $contentType);
         $this->assertFalse($data['success']);
         $this->assertNotEmpty($data['errors']);
+    }
+
+    public function testCartAddToCart()
+    {
+        $request = $this->http->createRequest('GET', _SHOP_URL_.'module/lelerestapi/'.'cart', [
+            'headers' => [
+                'Authorization' => 'Bearer '._JWT_TOKEN_
+            ]
+        ]);
+        $response = $this->http->send($request);
+        $data = json_decode($response->getBody(), true);
+        $prevCartCount = count($data['result']['cart']['products']);
+
+        $response = $this->http->createRequest('POST', _SHOP_URL_.'module/lelerestapi/'.'cart', [
+            'headers' => [
+                'Authorization' => 'Bearer '._JWT_TOKEN_
+            ],
+            'body' => [
+                'id_product' => 6,
+                'add' => 1
+            ]
+        ]);
+        $response = $this->http->send($response);
+        $data = json_decode($response->getBody(), true);
+        $nextCartCount = count($data['result']['cart']['products']);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals($nextCartCount, $prevCartCount+1);
+        $this->assertTrue($data['success']);
     }
 }
